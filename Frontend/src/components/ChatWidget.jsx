@@ -11,24 +11,31 @@ const ChatWidget = () => {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: "🌿 Hi, I'm Leafy from LeafGuard AI! Upload a leaf image to diagnose diseases or ask about treatments and shops. Try an option below! 🌱",
+      text: "🌿 Hi, I'm Leafy from LeafGuard AI! Upload a leaf image to diagnose diseases or ask about treatments, shops, or reports. Try an option below! 🌱",
       sender: 'bot'
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isBotTyping, setIsBotTyping] = useState(false);
+  const [fontSize, setFontSize] = useState(12); // Default font size in px
   const scrollAreaRef = useRef(null);
 
   const predefinedQuestions = [
     { id: 'q1', text: "How to diagnose plant disease?" },
     { id: 'q2', text: "Treatments for tomato blight?" },
-    { id: 'q3', text: "Find agro-shops near me" },
+    { id: 'q3', text: "Treatments for apple scab?" },
+    { id: 'q4', text: "Find agro-shops near me" },
+    { id: 'q5', text: "How to save diagnosis report?" },
+    { id: 'q6', text: "Weather alerts for diseases?" }
   ];
 
   const predefinedAnswers = {
-    "How to diagnose plant disease?": "Upload a clear leaf image on the main page. Our AI (MobileNetV2) will identify the disease, e.g., Tomato Late Blight (95% confidence). Try it!",
-    "Treatments for tomato blight?": "Organic: Remove infected leaves, improve air circulation, use copper sprays weekly. Chemical: Apply chlorothalonil fungicide, rotate crops. Source: FAO.",
-    "Find agro-shops near me": "Enter your 6-digit PIN code below, and I'll find nearby agro-shops using Google Maps!"
+    "How to diagnose plant disease?": "Upload a leaf image on the main page. Our MobileNetV2 AI will detect diseases like Tomato Late Blight with confidence scores. Try it now!",
+    "Treatments for tomato blight?": "Organic: Remove infected leaves, improve air flow, use copper sprays weekly. Chemical: Apply chlorothalonil, rotate crops. Source: FAO.",
+    "Treatments for apple scab?": "Organic: Prune trees, apply sulfur sprays. Chemical: Use captan fungicide, remove fallen leaves. Source: WikiHow.",
+    "Find agro-shops near me": "Enter your 6-digit PIN code below to find nearby agro-shops via Google Maps!",
+    "How to save diagnosis report?": "After diagnosis, click 'Save Report' on the results page to download a PDF with the disease, confidence, and treatment steps.",
+    "Weather alerts for diseases?": "Check the main page for weather-based alerts (via OpenWeather API) to know if conditions favor diseases like blight."
   };
 
   useEffect(() => {
@@ -63,13 +70,13 @@ const ChatWidget = () => {
       if (predefinedAnswers[userMessage]) {
         botResponseText = predefinedAnswers[userMessage];
       } else if (/^\d{6}$/.test(userMessage)) {
-        botResponseText = `Searching for shops near PIN ${userMessage}... Example: Green Agro Supplies, 2 km away. Use the Shop Locator for real results!`;
+        botResponseText = `Searching shops near PIN ${userMessage}... Example: Green Agro Supplies, 2 km away. Use Shop Locator for real results!`;
       }
       
       const botMessage = { id: Date.now() + 1, text: botResponseText, sender: 'bot' };
       setMessages([...newMessages, botMessage]);
       setIsBotTyping(false);
-    }, 800); // Reduced typing delay
+    }, 800);
   };
 
   const handleInputChange = (e) => {
@@ -88,9 +95,13 @@ const ChatWidget = () => {
   const handleClearChat = () => {
     setMessages([{
       id: 1,
-      text: "🌿 Hi, I'm Leafy from LeafGuard AI! Upload a leaf image to diagnose diseases or ask about treatments and shops. Try an option below! 🌱",
+      text: "🌿 Hi, I'm Leafy from LeafGuard AI! Upload a leaf image to diagnose diseases or ask about treatments, shops, or reports. Try an option below! 🌱",
       sender: 'bot'
     }]);
+  };
+
+  const handleFontSizeChange = (e) => {
+    setFontSize(e.target.value);
   };
 
   const chatBubbleVariants = {
@@ -136,13 +147,13 @@ const ChatWidget = () => {
           <motion.div
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.9 }}
+            exit={{ opacity: Gl0, y: 50, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="fixed bottom-20 right-6 w-[320px] h-[450px] bg-card shadow-retro-hard border-2 border-green-600 rounded-none flex flex-col overflow-hidden z-40 pixel-borders"
           >
             <header className="p-2 bg-green-600 text-white flex items-center justify-between border-b-2 border-green-800/30">
               <h3 className="text-base font-semibold font-serif flex items-center">
-                <Bot className="w-5 h-5 mr-1" /> Leafy Chat
+                <Bot className="w-5 h-5 mr-1" /> Leafy (βeta version) Chat
               </h3>
               <div className="flex items-center space-x-1">
                 <Button
@@ -183,11 +194,12 @@ const ChatWidget = () => {
                     {msg.sender === 'user' && <User className="w-5 h-5 text-blue-600 flex-shrink-0 mb-1" />}
                     <div
                       className={cn(
-                        "p-2 rounded-sm text-xs shadow-sm pixel-block",
+                        "p-2 rounded-sm shadow-sm pixel-block",
                         msg.sender === 'user'
                           ? "bg-blue-100 text-blue-900 border-2 border-blue-300/50"
                           : "bg-green-100 text-green-900 border-2 border-green-300/50"
                       )}
+                      style={{ fontSize: `${fontSize}px` }}
                     >
                       {msg.text}
                     </div>
@@ -201,7 +213,10 @@ const ChatWidget = () => {
                     className="flex items-end space-x-2 max-w-[80%]"
                   >
                     <Bot className="w-5 h-5 text-green-600 flex-shrink-0 mb-1" />
-                    <div className="p-2 rounded-sm text-xs bg-green-100 text-green-900 border-2 border-green-300/50">
+                    <div
+                      className="p-2 rounded-sm shadow-sm bg-green-100 text-green-900 border-2 border-green-300/50"
+                      style={{ fontSize: `${fontSize}px` }}
+                    >
                       <span className="animate-pulse">Typing...</span>
                     </div>
                   </motion.div>
@@ -222,6 +237,21 @@ const ChatWidget = () => {
                     {q.text}
                   </Button>
                 ))}
+              </div>
+              <div className="flex items-center space-x-2 mb-2">
+                <label htmlFor="font-size-slider" className="text-xs text-green-700">
+                  Text Size:
+                </label>
+                <input
+                  id="font-size-slider"
+                  type="range"
+                  min="8"
+                  max="14"
+                  value={fontSize}
+                  onChange={handleFontSizeChange}
+                  className="w-20 h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
+                />
+                <span className="text-xs text-green-700">{fontSize}px</span>
               </div>
               <form onSubmit={handleFormSubmit} className="flex items-center space-x-1">
                 <Input
