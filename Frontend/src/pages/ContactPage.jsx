@@ -119,7 +119,7 @@ const ContactPage = () => {
             </CardHeader>
             <CardContent className="space-y-6">
               {teamMembers.map((member) => (
-                <div key={member.name} className="p-4 rounded-sm border-2 border-primary/30 bg-primary/5 hover:shadow-retro-pink transition-shadow duration-200 pixel-borders-light">
+                <div key={member.name} className="p-4 rounded-sm border-2 border-primary/30 bg-primary/5 hover:shadow-retro-green transition-shadow duration-200 pixel-borders-light">
                   <div className="flex items-center mb-2">
                     <UserCircle className="w-10 h-10 mr-3 text-primary" />
                     <div>
