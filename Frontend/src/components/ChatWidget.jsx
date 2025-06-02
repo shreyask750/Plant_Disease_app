@@ -3,25 +3,40 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { MessageSquare, X, Send, Bot, User } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, User, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import ReactMarkdown from 'react-markdown';
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { id: 1, text: "Hi there! I'm Leafy, your friendly assistant. How can I help you today?", sender: 'bot' }
+    {
+      id: 1,
+      text: "🌿 Welcome to LeafGuard AI! I'm Leafy, your plant care assistant. Upload a leaf image for disease diagnosis, or ask about treatments and nearby agro-shops. Try one of the options below! 🌱",
+      sender: 'bot'
+    }
   ]);
   const [inputValue, setInputValue] = useState('');
+  const [isBotTyping, setIsBotTyping] = useState(false);
   const scrollAreaRef = useRef(null);
 
   const predefinedQuestions = [
-    { id: 'q1', text: "What is this project?" },
-    { id: 'q2', text: "Who built this?" },
+    { id: 'q1', text: "How do I diagnose a plant disease?" },
+    { id: 'q2', text: "What treatments are available for tomato blight?" },
+    { id: 'q3', text: "Find agro-shops near me" },
   ];
 
   const predefinedAnswers = {
-    "What is this project?": "LeafGuard AI is a plant disease diagnosis tool. Upload an image of a plant leaf, and our AI will try to identify any diseases and suggest treatments!",
-    "Who built this?": "LeafGuard AI was built by the talented team: Sampark Bhol, Akshat Jain, and Shreyas K. You can find their GitHub profiles on the Contact Us page!",
+    "How do I diagnose a plant disease?": "To diagnose a plant disease, upload a clear image of the affected leaf using the upload button on the main page. Our AI, powered by MobileNetV2, will analyze it and return the disease name with confidence scores. For example, it might detect *Tomato Late Blight* with 95% confidence. Try it now!",
+    "What treatments are available for tomato blight?": `**Organic Treatment for Tomato Blight**  
+1. **Remove Affected Leaves**: Carefully cut off infected leaves and dispose of them away from plants.  
+2. **Improve Air Circulation**: Space plants adequately and prune lower leaves.  
+3. **Apply Copper-Based Fungicide**: Use organic copper sprays like Bordeaux mixture weekly.  
+**Chemical Treatment**  
+1. **Fungicides**: Apply chlorothalonil or mancozeb-based fungicides as per label instructions.  
+2. **Rotate Crops**: Prevent recurrence by rotating crops yearly.  
+*Source*: WikiHow & FAO Guidelines`,
+    "Find agro-shops near me": "Please provide your PIN code in the input field, and I'll use Google Maps to find nearby agro-chemical shops for your plant care needs!",
   };
 
   useEffect(() => {
@@ -31,24 +46,40 @@ const ChatWidget = () => {
         viewport.scrollTop = viewport.scrollHeight;
       }
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isBotTyping]);
 
   const toggleChat = () => setIsOpen(!isOpen);
 
   const handleSendMessage = (text) => {
     const userMessage = text.trim();
-    if (!userMessage) return;
+    if (!userMessage) {
+      setMessages([...messages, {
+        id: Date.now(),
+        text: "⚠️ Please enter a valid message!",
+        sender: 'bot'
+      }]);
+      return;
+    }
 
     const newMessages = [...messages, { id: Date.now(), text: userMessage, sender: 'user' }];
-    
-    let botResponseText = "I'm sorry, I can only answer predefined questions right now. Try one of the options!";
-    if (predefinedAnswers[userMessage]) {
-      botResponseText = predefinedAnswers[userMessage];
-    }
-    
-    const botMessage = { id: Date.now() + 1, text: botResponseText, sender: 'bot' };
-    setMessages([...newMessages, botMessage]);
+    setMessages(newMessages);
     setInputValue('');
+    setIsBotTyping(true);
+
+    setTimeout(() => {
+      let botResponseText = "I'm sorry, I can only answer predefined questions or respond to PIN codes for shop locations. Try one of the options below!";
+      if (predefinedAnswers[userMessage]) {
+        botResponseText = predefinedAnswers[userMessage];
+      } else if (/^\d{6}$/.test(userMessage)) {
+        botResponseText = `🔍 Searching for agro-shops near PIN ${userMessage}...  
+*Example Shop*: Green Agro Supplies, 2 km away.  
+*Note*: For real shop results, check the Shop Locator on the main page with Google Maps integration!`;
+      }
+      
+      const botMessage = { id: Date.now() + 1, text: botResponseText, sender: 'bot' };
+      setMessages([...newMessages, botMessage]);
+      setIsBotTyping(false);
+    }, 1000); // Simulate typing delay
   };
 
   const handleInputChange = (e) => {
@@ -64,13 +95,26 @@ const ChatWidget = () => {
     handleSendMessage(questionText);
   };
 
+  const handleClearChat = () => {
+    setMessages([{
+      id: 1,
+      text: "🌿 Welcome to LeafGuard AI! I'm Leafy, your plant care assistant. Upload a leaf image for disease diagnosis, or ask about treatments and nearby agro-shops. Try one of the options below! 🌱",
+      sender: 'bot'
+    }]);
+  };
+
   const chatBubbleVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
   };
 
+  const typingVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3, repeat: Infinity, repeatType: 'reverse' } }
+  };
+
   return (
-    <>
+    <div className="font-sans">
       <motion.div
         className="fixed bottom-6 right-6 z-50"
         initial={{ scale: 0 }}
@@ -80,7 +124,7 @@ const ChatWidget = () => {
         <Button
           onClick={toggleChat}
           size="lg"
-          className="rounded-full w-16 h-16 bg-primary text-primary-foreground hover:bg-primary/90 shadow-retro-hard !p-0 flex items-center justify-center"
+          className="rounded-full w-16 h-16 bg-green-600 text-white hover:bg-green-700 shadow-lg flex items-center justify-center transition-all"
           aria-label={isOpen ? "Close chat" : "Open chat"}
         >
           <AnimatePresence initial={false} mode="wait">
@@ -104,18 +148,35 @@ const ChatWidget = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-24 right-6 w-[360px] h-[500px] bg-card shadow-retro-hard border-2 border-primary rounded-none flex flex-col overflow-hidden z-40 pixel-borders"
+            className="fixed bottom-24 right-6 w-[360px] h-[500px] bg-white shadow-2xl border-2 border-green-600 rounded-lg flex flex-col overflow-hidden z-40"
           >
-            <header className="p-3 bg-primary text-primary-foreground flex items-center justify-between border-b-2 border-primary-foreground/30">
+            <header className="p-3 bg-green-600 text-white flex items-center justify-between border-b-2 border-green-800/30">
               <h3 className="text-lg font-semibold font-serif flex items-center">
                 <Bot className="w-6 h-6 mr-2" /> Leafy Chat
               </h3>
-              <Button variant="ghost" size="icon" onClick={toggleChat} className="text-primary-foreground hover:bg-primary/80 h-8 w-8">
-                <X className="w-5 h-5" />
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleClearChat}
+                  className="text-white hover:bg-green-700 h-8 w-8"
+                  aria-label="Clear chat"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleChat}
+                  className="text-white hover:bg-green-700 h-8 w-8"
+                  aria-label="Close chat"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
             </header>
 
-            <ScrollArea className="flex-1 p-4 bg-background/50" ref={scrollAreaRef}>
+            <ScrollArea className="flex-1 p-4 bg-gray-50" ref={scrollAreaRef}>
               <div className="space-y-4">
                 {messages.map((msg) => (
                   <motion.div
@@ -128,32 +189,45 @@ const ChatWidget = () => {
                       msg.sender === 'user' ? "ml-auto flex-row-reverse space-x-reverse" : ""
                     )}
                   >
-                    {msg.sender === 'bot' && <Bot className="w-6 h-6 text-primary flex-shrink-0 mb-1" />}
-                    {msg.sender === 'user' && <User className="w-6 h-6 text-secondary flex-shrink-0 mb-1" />}
+                    {msg.sender === 'bot' && <Bot className="w-6 h-6 text-green-600 flex-shrink-0 mb-1" />}
+                    {msg.sender === 'user' && <User className="w-6 h-6 text-blue-600 flex-shrink-0 mb-1" />}
                     <div
                       className={cn(
-                        "p-3 rounded-sm text-sm shadow-sm pixel-block",
+                        "p-3 rounded-lg text-sm shadow-sm",
                         msg.sender === 'user'
-                          ? "bg-secondary text-secondary-foreground border-2 border-secondary-foreground/30"
-                          : "bg-primary/10 text-foreground border-2 border-primary/30"
+                          ? "bg-blue-100 text-blue-900 border-2 border-blue-300"
+                          : "bg-green-100 text-green-900 border-2 border-green-300"
                       )}
                     >
-                      {msg.text}
+                      <ReactMarkdown>{msg.text}</ReactMarkdown>
                     </div>
                   </motion.div>
                 ))}
+                {isBotTyping && (
+                  <motion.div
+                    variants={typingVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="flex items-end space-x-2 max-w-[85%]"
+                  >
+                    <Bot className="w-6 h-6 text-green-600 flex-shrink-0 mb-1" />
+                    <div className="p-3 rounded-lg text-sm bg-green-100 text-green-900 border-2 border-green-300">
+                      <span className="animate-pulse">Typing...</span>
+                    </div>
+                  </motion.div>
+                )}
               </div>
             </ScrollArea>
-            
-            <div className="p-3 border-t-2 border-primary/30 bg-card">
-              <div className="flex space-x-2 mb-2">
+
+            <div className="p-3 border-t-2 border-green-300 bg-white">
+              <div className="flex flex-wrap gap-2 mb-3">
                 {predefinedQuestions.map((q) => (
-                  <Button 
-                    key={q.id} 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    key={q.id}
+                    variant="outline"
+                    size="sm"
                     onClick={() => handleQuickReply(q.text)}
-                    className="text-xs flex-1 btn-retro-outline border-primary/50 text-primary/90 hover:bg-primary/20"
+                    className="text-xs flex-1 bg-green-50 text-green-700 border-green-400 hover:bg-green-200 transition-colors"
                   >
                     {q.text}
                   </Button>
@@ -164,11 +238,15 @@ const ChatWidget = () => {
                   type="text"
                   value={inputValue}
                   onChange={handleInputChange}
-                  placeholder="Type a message..."
-                  className="flex-1 pixel-input border-primary/50 focus:ring-secondary"
+                  placeholder="Type a message or PIN code..."
+                  className="flex-1 border-green-400 focus:ring-green-500 focus:border-green-500 rounded-lg"
                   autoComplete="off"
                 />
-                <Button type="submit" size="icon" className="bg-secondary text-secondary-foreground hover:bg-secondary/90 btn-retro-secondary">
+                <Button
+                  type="submit"
+                  size="icon"
+                  className="bg-green-600 text-white hover:bg-green-700 rounded-lg"
+                >
                   <Send className="w-5 h-5" />
                 </Button>
               </form>
@@ -176,7 +254,7 @@ const ChatWidget = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 };
 
