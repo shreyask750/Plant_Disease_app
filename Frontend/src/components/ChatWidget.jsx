@@ -11,7 +11,7 @@ const ChatWidget = () => {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: "🌿 Welcome to LeafGuard AI! I'm Leafy, your plant care assistant. Upload a leaf image for disease diagnosis, or ask about treatments and nearby agro-shops. Try one of the options below! 🌱",
+      text: "🌿 Hi, I'm Leafy from LeafGuard AI! Upload a leaf image to diagnose diseases or ask about treatments and shops. Try an option below! 🌱",
       sender: 'bot'
     }
   ]);
@@ -20,15 +20,15 @@ const ChatWidget = () => {
   const scrollAreaRef = useRef(null);
 
   const predefinedQuestions = [
-    { id: 'q1', text: "How do I diagnose a plant disease?" },
-    { id: 'q2', text: "What treatments are available for tomato blight?" },
+    { id: 'q1', text: "How to diagnose plant disease?" },
+    { id: 'q2', text: "Treatments for tomato blight?" },
     { id: 'q3', text: "Find agro-shops near me" },
   ];
 
   const predefinedAnswers = {
-    "How do I diagnose a plant disease?": "To diagnose a plant disease, upload a clear image of the affected leaf using the upload button on the main page. Our AI, powered by MobileNetV2, will analyze it and return the disease name with confidence scores. For example, it might detect Tomato Late Blight with 95% confidence. Try it now!",
-    "What treatments are available for tomato blight?": "Organic Treatment for Tomato Blight:\n1. Remove Affected Leaves: Carefully cut off infected leaves and dispose of them away from plants.\n2. Improve Air Circulation: Space plants adequately and prune lower leaves.\n3. Apply Copper-Based Fungicide: Use organic copper sprays like Bordeaux mixture weekly.\nChemical Treatment:\n1. Fungicides: Apply chlorothalonil or mancozeb-based fungicides as per label instructions.\n2. Rotate Crops: Prevent recurrence by rotating crops yearly.\nSource: WikiHow & FAO Guidelines",
-    "Find agro-shops near me": "Please provide your PIN code in the input field, and I'll use Google Maps to find nearby agro-chemical shops for your plant care needs!",
+    "How to diagnose plant disease?": "Upload a clear leaf image on the main page. Our AI (MobileNetV2) will identify the disease, e.g., Tomato Late Blight (95% confidence). Try it!",
+    "Treatments for tomato blight?": "Organic: Remove infected leaves, improve air circulation, use copper sprays weekly. Chemical: Apply chlorothalonil fungicide, rotate crops. Source: FAO.",
+    "Find agro-shops near me": "Enter your 6-digit PIN code below, and I'll find nearby agro-shops using Google Maps!"
   };
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const ChatWidget = () => {
     if (!userMessage) {
       setMessages([...messages, {
         id: Date.now(),
-        text: "⚠️ Please enter a valid message!",
+        text: "⚠️ Please enter a message!",
         sender: 'bot'
       }]);
       return;
@@ -59,17 +59,17 @@ const ChatWidget = () => {
     setIsBotTyping(true);
 
     setTimeout(() => {
-      let botResponseText = "I'm sorry, I can only answer predefined questions or respond to PIN codes for shop locations. Try one of the options below!";
+      let botResponseText = "Sorry, I can only answer predefined questions or PIN codes for shops. Try an option below!";
       if (predefinedAnswers[userMessage]) {
         botResponseText = predefinedAnswers[userMessage];
       } else if (/^\d{6}$/.test(userMessage)) {
-        botResponseText = `🔍 Searching for agro-shops near PIN ${userMessage}...\nExample Shop: Green Agro Supplies, 2 km away.\nNote: For real shop results, check the Shop Locator on the main page with Google Maps integration!`;
+        botResponseText = `Searching for shops near PIN ${userMessage}... Example: Green Agro Supplies, 2 km away. Use the Shop Locator for real results!`;
       }
       
       const botMessage = { id: Date.now() + 1, text: botResponseText, sender: 'bot' };
       setMessages([...newMessages, botMessage]);
       setIsBotTyping(false);
-    }, 1000); // Simulate typing delay
+    }, 800); // Reduced typing delay
   };
 
   const handleInputChange = (e) => {
@@ -88,7 +88,7 @@ const ChatWidget = () => {
   const handleClearChat = () => {
     setMessages([{
       id: 1,
-      text: "🌿 Welcome to LeafGuard AI! I'm Leafy, your plant care assistant. Upload a leaf image for disease diagnosis, or ask about treatments and nearby agro-shops. Try one of the options below! 🌱",
+      text: "🌿 Hi, I'm Leafy from LeafGuard AI! Upload a leaf image to diagnose diseases or ask about treatments and shops. Try an option below! 🌱",
       sender: 'bot'
     }]);
   };
@@ -114,17 +114,17 @@ const ChatWidget = () => {
         <Button
           onClick={toggleChat}
           size="lg"
-          className="rounded-full w-16 h-16 bg-green-600 text-white hover:bg-green-700 shadow-lg flex items-center justify-center transition-all"
+          className="rounded-full w-14 h-14 bg-green-500 text-white hover:bg-green-600 shadow-retro-hard flex items-center justify-center"
           aria-label={isOpen ? "Close chat" : "Open chat"}
         >
           <AnimatePresence initial={false} mode="wait">
             {isOpen ? (
               <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                <X className="w-8 h-8" />
+                <X className="w-6 h-6" />
               </motion.div>
             ) : (
               <motion.div key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                <MessageSquare className="w-8 h-8" />
+                <MessageSquare className="w-6 h-6" />
               </motion.div>
             )}
           </AnimatePresence>
@@ -138,36 +138,36 @@ const ChatWidget = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-24 right-6 w-[360px] h-[500px] bg-white shadow-2xl border-2 border-green-600 rounded-lg flex flex-col overflow-hidden z-40"
+            className="fixed bottom-20 right-6 w-[320px] h-[450px] bg-card shadow-retro-hard border-2 border-green-600 rounded-none flex flex-col overflow-hidden z-40 pixel-borders"
           >
-            <header className="p-3 bg-green-600 text-white flex items-center justify-between border-b-2 border-green-800/30">
-              <h3 className="text-lg font-semibold font-serif flex items-center">
-                <Bot className="w-6 h-6 mr-2" /> Leafy Chat
+            <header className="p-2 bg-green-600 text-white flex items-center justify-between border-b-2 border-green-800/30">
+              <h3 className="text-base font-semibold font-serif flex items-center">
+                <Bot className="w-5 h-5 mr-1" /> Leafy Chat
               </h3>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={handleClearChat}
-                  className="text-white hover:bg-green-700 h-8 w-8"
+                  className="text-white hover:bg-green-700 h-7 w-7"
                   aria-label="Clear chat"
                 >
-                  <Trash2 className="w-5 h-5" />
+                  <Trash2 className="w-4 h-4" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={toggleChat}
-                  className="text-white hover:bg-green-700 h-8 w-8"
+                  className="text-white hover:bg-green-700 h-7 w-7"
                   aria-label="Close chat"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </Button>
               </div>
             </header>
 
-            <ScrollArea className="flex-1 p-4 bg-gray-50" ref={scrollAreaRef}>
-              <div className="space-y-4">
+            <ScrollArea className="flex-1 p-3 bg-background/50" ref={scrollAreaRef}>
+              <div className="space-y-3">
                 {messages.map((msg) => (
                   <motion.div
                     key={msg.id}
@@ -175,18 +175,18 @@ const ChatWidget = () => {
                     initial="hidden"
                     animate="visible"
                     className={cn(
-                      "flex items-end space-x-2 max-w-[85%]",
+                      "flex items-end space-x-2 max-w-[80%]",
                       msg.sender === 'user' ? "ml-auto flex-row-reverse space-x-reverse" : ""
                     )}
                   >
-                    {msg.sender === 'bot' && <Bot className="w-6 h-6 text-green-600 flex-shrink-0 mb-1" />}
-                    {msg.sender === 'user' && <User className="w-6 h-6 text-blue-600 flex-shrink-0 mb-1" />}
+                    {msg.sender === 'bot' && <Bot className="w-5 h-5 text-green-600 flex-shrink-0 mb-1" />}
+                    {msg.sender === 'user' && <User className="w-5 h-5 text-blue-600 flex-shrink-0 mb-1" />}
                     <div
                       className={cn(
-                        "p-3 rounded-lg text-sm shadow-sm whitespace-pre-line",
+                        "p-2 rounded-sm text-xs shadow-sm pixel-block",
                         msg.sender === 'user'
-                          ? "bg-blue-100 text-blue-900 border-2 border-blue-300"
-                          : "bg-green-100 text-green-900 border-2 border-green-300"
+                          ? "bg-blue-100 text-blue-900 border-2 border-blue-300/50"
+                          : "bg-green-100 text-green-900 border-2 border-green-300/50"
                       )}
                     >
                       {msg.text}
@@ -198,10 +198,10 @@ const ChatWidget = () => {
                     variants={typingVariants}
                     initial="hidden"
                     animate="visible"
-                    className="flex items-end space-x-2 max-w-[85%]"
+                    className="flex items-end space-x-2 max-w-[80%]"
                   >
-                    <Bot className="w-6 h-6 text-green-600 flex-shrink-0 mb-1" />
-                    <div className="p-3 rounded-lg text-sm bg-green-100 text-green-900 border-2 border-green-300">
+                    <Bot className="w-5 h-5 text-green-600 flex-shrink-0 mb-1" />
+                    <div className="p-2 rounded-sm text-xs bg-green-100 text-green-900 border-2 border-green-300/50">
                       <span className="animate-pulse">Typing...</span>
                     </div>
                   </motion.div>
@@ -209,35 +209,35 @@ const ChatWidget = () => {
               </div>
             </ScrollArea>
 
-            <div className="p-3 border-t-2 border-green-300 bg-white">
-              <div className="flex flex-wrap gap-2 mb-3">
+            <div className="p-2 border-t-2 border-green-300/50 bg-card">
+              <div className="flex flex-wrap gap-1 mb-2">
                 {predefinedQuestions.map((q) => (
                   <Button
                     key={q.id}
                     variant="outline"
                     size="sm"
                     onClick={() => handleQuickReply(q.text)}
-                    className="text-xs flex-1 bg-green-50 text-green-700 border-green-400 hover:bg-green-200 transition-colors"
+                    className="text-[10px] flex-1 bg-green-50 text-green-700 border-green-400/50 hover:bg-green-200 pixel-block"
                   >
                     {q.text}
                   </Button>
                 ))}
               </div>
-              <form onSubmit={handleFormSubmit} className="flex items-center space-x-2">
+              <form onSubmit={handleFormSubmit} className="flex items-center space-x-1">
                 <Input
                   type="text"
                   value={inputValue}
                   onChange={handleInputChange}
-                  placeholder="Type a message or PIN code..."
-                  className="flex-1 border-green-400 focus:ring-green-500 focus:border-green-500 rounded-lg"
+                  placeholder="Message or PIN code..."
+                  className="flex-1 text-xs border-green-400/50 focus:ring-green-500 pixel-input h-8"
                   autoComplete="off"
                 />
                 <Button
                   type="submit"
                   size="icon"
-                  className="bg-green-600 text-white hover:bg-green-700 rounded-lg"
+                  className="bg-green-500 text-white hover:bg-green-600 pixel-block h-8 w-8"
                 >
-                  <Send className="w-5 h-5" />
+                  <Send className="w-4 h-4" />
                 </Button>
               </form>
             </div>
