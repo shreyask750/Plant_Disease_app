@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageSquare, X, Send, Bot, User, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import ReactMarkdown from 'react-markdown';
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,15 +26,8 @@ const ChatWidget = () => {
   ];
 
   const predefinedAnswers = {
-    "How do I diagnose a plant disease?": "To diagnose a plant disease, upload a clear image of the affected leaf using the upload button on the main page. Our AI, powered by MobileNetV2, will analyze it and return the disease name with confidence scores. For example, it might detect *Tomato Late Blight* with 95% confidence. Try it now!",
-    "What treatments are available for tomato blight?": `**Organic Treatment for Tomato Blight**  
-1. **Remove Affected Leaves**: Carefully cut off infected leaves and dispose of them away from plants.  
-2. **Improve Air Circulation**: Space plants adequately and prune lower leaves.  
-3. **Apply Copper-Based Fungicide**: Use organic copper sprays like Bordeaux mixture weekly.  
-**Chemical Treatment**  
-1. **Fungicides**: Apply chlorothalonil or mancozeb-based fungicides as per label instructions.  
-2. **Rotate Crops**: Prevent recurrence by rotating crops yearly.  
-*Source*: WikiHow & FAO Guidelines`,
+    "How do I diagnose a plant disease?": "To diagnose a plant disease, upload a clear image of the affected leaf using the upload button on the main page. Our AI, powered by MobileNetV2, will analyze it and return the disease name with confidence scores. For example, it might detect Tomato Late Blight with 95% confidence. Try it now!",
+    "What treatments are available for tomato blight?": "Organic Treatment for Tomato Blight:\n1. Remove Affected Leaves: Carefully cut off infected leaves and dispose of them away from plants.\n2. Improve Air Circulation: Space plants adequately and prune lower leaves.\n3. Apply Copper-Based Fungicide: Use organic copper sprays like Bordeaux mixture weekly.\nChemical Treatment:\n1. Fungicides: Apply chlorothalonil or mancozeb-based fungicides as per label instructions.\n2. Rotate Crops: Prevent recurrence by rotating crops yearly.\nSource: WikiHow & FAO Guidelines",
     "Find agro-shops near me": "Please provide your PIN code in the input field, and I'll use Google Maps to find nearby agro-chemical shops for your plant care needs!",
   };
 
@@ -71,9 +63,7 @@ const ChatWidget = () => {
       if (predefinedAnswers[userMessage]) {
         botResponseText = predefinedAnswers[userMessage];
       } else if (/^\d{6}$/.test(userMessage)) {
-        botResponseText = `🔍 Searching for agro-shops near PIN ${userMessage}...  
-*Example Shop*: Green Agro Supplies, 2 km away.  
-*Note*: For real shop results, check the Shop Locator on the main page with Google Maps integration!`;
+        botResponseText = `🔍 Searching for agro-shops near PIN ${userMessage}...\nExample Shop: Green Agro Supplies, 2 km away.\nNote: For real shop results, check the Shop Locator on the main page with Google Maps integration!`;
       }
       
       const botMessage = { id: Date.now() + 1, text: botResponseText, sender: 'bot' };
@@ -193,13 +183,13 @@ const ChatWidget = () => {
                     {msg.sender === 'user' && <User className="w-6 h-6 text-blue-600 flex-shrink-0 mb-1" />}
                     <div
                       className={cn(
-                        "p-3 rounded-lg text-sm shadow-sm",
+                        "p-3 rounded-lg text-sm shadow-sm whitespace-pre-line",
                         msg.sender === 'user'
                           ? "bg-blue-100 text-blue-900 border-2 border-blue-300"
                           : "bg-green-100 text-green-900 border-2 border-green-300"
                       )}
                     >
-                      <ReactMarkdown>{msg.text}</ReactMarkdown>
+                      {msg.text}
                     </div>
                   </motion.div>
                 ))}
