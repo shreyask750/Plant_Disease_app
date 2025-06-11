@@ -1,33 +1,42 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
-import { NavLink } from 'react-router-dom';
+import { Leaf, ShieldCheck } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <motion.footer 
-      initial={{ y: 100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
-      className="bg-gray-900 text-gray-400 py-10 mt-16 border-t-4 border-primary pixel-borders-gold"
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="mb-6">
-          <span className="font-serif text-xl text-gold-DEFAULT">LeafGuard AI</span>
-          <p className="text-sm text-gray-500 mt-1">Your Partner in Plant Health</p>
+    <footer className="relative z-10 mt-20">
+      <motion.div
+        className="professional-card-footer mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 rounded-t-xl py-10"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      >
+        <div className="container mx-auto text-center">
+          <div className="mb-8">
+            <div className="flex items-center justify-center space-x-3 mb-5">
+              <ShieldCheck className="w-10 h-10 text-primary" />
+              <h2 className="text-3xl font-semibold primary-text-gradient font-['Press_Start_2P'] tracking-tight">
+                LeafGuard AI
+              </h2>
+              <Leaf className="w-8 h-8 text-primary" />
+            </div>
+            <p className="text-gray-400 max-w-2xl mx-auto text-sm font-['VT323'] text-lg leading-relaxed">
+              Advanced AI solutions for plant health and agricultural sustainability. Committed to empowering growers with cutting-edge technology. Pixel by pixel, we protect your harvest.
+            </p>
+          </div>
+
+          <div className="border-t border-gray-700 pt-8">
+            <p className="text-gray-500 font-medium text-sm font-['VT323'] text-base">
+              © {new Date().getFullYear()} LeafGuard AI Project Limited. All Rights Reserved. Est. 2025.
+            </p>
+            <p className="text-gray-600 text-xs mt-2 font-['VT323'] text-sm">
+              System Online. All code compiled with precision and expertise.
+            </p>
+          </div>
         </div>
-        <div className="flex flex-wrap justify-center space-x-6 mb-6">
-          <NavLink to="/about" className="hover:text-gold-DEFAULT transition-colors">About Us</NavLink>
-          <NavLink to="/history" className="hover:text-gold-DEFAULT transition-colors">Analysis History</NavLink>
-          <NavLink to="/contact" className="hover:text-gold-DEFAULT transition-colors">Contact Us</NavLink>
-          <a href="#" className="hover:text-gold-DEFAULT transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-gold-DEFAULT transition-colors">Terms of Service</a>
-        </div>
-        <p className="text-sm">
-          &copy; {new Date().getFullYear()} LeafGuard AI. All rights reserved.
-        </p>
-        <div className="mt-6 h-1.5 w-24 mx-auto bg-gold-DEFAULT rounded-sm pixel-block"></div>
-      </div>
-    </motion.footer>
+      </motion.div>
+    </footer>
   );
 };
 
