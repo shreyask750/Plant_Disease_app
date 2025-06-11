@@ -79,7 +79,7 @@ const UploadPage = () => {
 
     toast({
       title: "AI Analysis Pending",
-      description: "🚧 Backend for AI analysis is not yet implemented.",
+      description: "🚧 Backend for AI analysis is not yet implemented. This is a placeholder. You can request full backend integration in your next prompt! 🚀",
       duration: 5000,
     });
     
@@ -174,7 +174,7 @@ const UploadPage = () => {
               <Button
                 onClick={() => toast({
                   title: "Camera feature",
-                  description: "🚧 This feature isn't implemented yet."
+                  description: "🚧 This feature isn't implemented yet—but don't worry! You can request it in your next prompt! 🚀"
                 })}
                 variant="outline"
                 className="border-green-500 text-green-400 hover:bg-green-500/20"
