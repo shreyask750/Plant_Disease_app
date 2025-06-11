@@ -156,7 +156,7 @@ const Contact = () => {
                   onChange={handleInputChange}
                   required
                   className="medieval-input w-full pl-12 pr-4 py-3 rounded-md"
-                  placeholder="e.g., Sir Reginald Oakheart"
+                  placeholder="................., Sir Reginald Oakheart"
                 />
               </div>
             </motion.div>
@@ -174,7 +174,7 @@ const Contact = () => {
                   onChange={handleInputChange}
                   required
                   className="medieval-input w-full pl-12 pr-4 py-3 rounded-md"
-                  placeholder="e.g., sir.reginald@camelot.com"
+                  placeholder="................., sir.reginald@camelot.com"
                 />
               </div>
             </motion.div>
@@ -194,7 +194,7 @@ const Contact = () => {
                 required
                 rows={6}
                 className="medieval-input w-full pl-12 pr-4 py-3 rounded-md resize-none"
-                placeholder="Hark, scribe thy query or tidings upon this parchment..."
+                placeholder="..................Hark, scribe thy query or tidings upon this parchment..."
               />
             </div>
           </motion.div>
