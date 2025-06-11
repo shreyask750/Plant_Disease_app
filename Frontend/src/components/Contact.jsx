@@ -228,7 +228,7 @@ const Contact = () => {
 
         <div className="mt-10 text-center">
           <p className="text-yellow-600 text-sm">
-            Thy missives shall be delivered to the Grand Scribe at: <span className="font-mono text-yellow-400/80">aj29162460@gmail.com</span>
+            Thy missives shall be delivered to the Grand Scribe at: <span className="font-mono text-yellow-400/80">their mail address</span>
           </p>
         </div>
       </motion.div>
