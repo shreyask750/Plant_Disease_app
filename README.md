@@ -11,5 +11,5 @@ https://plantdisease-scarlmtd-projects-co.vercel.app
 
 ## tech and description
 
-A plant disease detector webapp - built via usage of react , 3js , OpenCV , mediapipe, FastAPI and a fucntioning backup
+A plant disease detector webapp - built via usage of react , 3js , OpenCV , mediapipe, FastAPI and a fucntioning backend
 
