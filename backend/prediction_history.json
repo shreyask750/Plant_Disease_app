@@ -1,0 +1,22 @@
+[
+  {
+    "timestamp": "20250626_111411",
+    "prediction": "Apple Scab",
+    "confidence": 0.9647279977798462,
+    "severity": "Moderate",
+    "status": "treated",
+    "image_url": "/images/20250626_111411.png",
+    "report_url": "/reports/20250626_111411.pdf",
+    "reportFilename": "20250626_111411.pdf"
+  },
+  {
+    "timestamp": "20250626_111456",
+    "prediction": "Healthy",
+    "confidence": 0.766024649143219,
+    "severity": "N/A",
+    "status": "healthy",
+    "image_url": "/images/20250626_111456.png",
+    "report_url": "/reports/20250626_111456.pdf",
+    "reportFilename": "20250626_111456.pdf"
+  }
+]
