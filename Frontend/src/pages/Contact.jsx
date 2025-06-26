@@ -21,29 +21,29 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.message) {
       toast({
-        title: "Missing fields",
-        description: "Please fill in all required fields.",
+        title: "Ye fields art barren",
+        description: "Pray, fill all the required scrolls.",
         variant: "destructive"
       });
       return;
     }
 
     const emailBody = `Name: ${formData.name}\nEmail: ${formData.email}\nSubject: ${formData.subject}\n\nMessage:\n${formData.message}`;
-    const mailtoLink = `mailto:aj29162460@gmail.com?subject=${encodeURIComponent(formData.subject || 'LeafGuard AI Contact')}&body=${encodeURIComponent(emailBody)}`;
-    
+    const mailtoLink = `mailto:aj29162460@gmail.com?subject=${encodeURIComponent(formData.subject || 'Scroll from LeafGuard AI')}&&body=${encodeURIComponent(emailBody)}`;
+
     try {
       window.location.href = mailtoLink;
       toast({
-        title: "Message prepared!",
-        description: "Your email client should open with the message ready to send."
+        title: "Scroll Prepared!",
+        description: "Thy email parchment is ready in your messenger!"
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Could not open email client. Please copy the details manually.",
+        title: "Alas!",
+        description: "Could not conjure thy email. Please copy it manually.",
         variant: "destructive"
       });
       console.error("Failed to open mailto link:", error);
@@ -58,146 +58,139 @@ const Contact = () => {
   };
 
   const teamMembers = [
-    {
-      name: "Sampark Bhol",
-      github: "https://github.com/samparkbhol"
-    },
-    {
-      name: "Akshat Jain",
-      github: "https://github.com/akshatjain",
-      email: "aj29162460@gmail.com"
-    },
-    {
-      name: "Shreyas K",
-      github: "https://github.com/shreyask"
-    }
+    { name: "Sampark Bhol", github: "https://github.com/samparkbhol" },
+    { name: "Akshat Jain", github: "https://github.com/akshatjain" },
+    { name: "Shreyas K", github: "https://github.com/shreyask" }
   ];
 
   return (
-    <div className="min-h-screen pt-20 px-4 bg-gray-900">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen pt-20 px-4 bg-[#1a130b] text-[#f5ecd4] font-[Cinzel]">
+      <div className="max-w-3xl mx-auto">
+
+        {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h1 className="font-orbitron text-4xl md:text-6xl font-bold text-green-400 text-emphasis mb-6">
-            Contact Us
+          <h1 className="text-5xl md:text-6xl font-bold text-[#d4af37] mb-4 drop-shadow-md border-b-4 border-[#8b5e3c] pb-4">
+            📜 The Scroll of Contact 📜
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Have questions about LeafGuard AI? Need technical support? 
-            Want to collaborate? We'd love to hear from you!
+          <p className="text-xl italic text-[#e9e3c7] max-w-2xl mx-auto mt-4">
+            Should thee seek counsel, wisdom, or forge an alliance, inscribe thy message below.
           </p>
         </motion.div>
 
+        {/* Scroll Form */}
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
+          initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="bg-gray-800/60 backdrop-blur-sm border border-green-500/30 rounded-lg p-8"
+          transition={{ duration: 1 }}
+          className="bg-[#3d2a14] border-8 border-[#c2a679] rounded-[2rem] p-6 md:p-10 shadow-[0_0_30px_#c2a67955] font-serif"
+          style={{
+            backgroundImage: "repeating-linear-gradient(0deg, #3d2a14 0px, #3d2a14 30px, #2e1f12 30px, #2e1f12 60px)",
+            backgroundSize: "cover"
+          }}
         >
-          <h2 className="font-orbitron text-2xl font-bold text-green-400 text-emphasis mb-6">
-            Send us a Message
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-green-400 mb-2">
-                  Name *
-                </label>
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Handmade field */}
+            <div>
+              <p className="text-[#f9f3e7] mb-2">Thy Name *</p>
+              <div className="bg-[#291b10] border border-[#c2a679] px-4 py-3 rounded-md text-[#e9dbc3]">
                 <input
-                  type="text"
                   name="name"
-                  id="name"
+                  type="text"
+                  placeholder="Write thy name here..."
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 bg-gray-700 border border-green-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="Your full name"
+                  className="w-full bg-transparent outline-none placeholder-[#b6a284] text-inherit"
                 />
               </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-green-400 mb-2">
-                  Email *
-                </label>
+            </div>
+
+            <div>
+              <p className="text-[#f9f3e7] mb-2">Scroll Address (Email) *</p>
+              <div className="bg-[#291b10] border border-[#c2a679] px-4 py-3 rounded-md text-[#e9dbc3]">
                 <input
-                  type="email"
                   name="email"
-                  id="email"
+                  type="email"
+                  placeholder="thy@email.com"
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 bg-gray-700 border border-green-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="your.email@example.com"
+                  className="w-full bg-transparent outline-none placeholder-[#b6a284] text-inherit"
                 />
               </div>
             </div>
+
             <div>
-              <label htmlFor="subject" className="block text-sm font-semibold text-green-400 mb-2">
-                Subject
-              </label>
-              <input
-                type="text"
-                name="subject"
-                id="subject"
-                value={formData.subject}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 bg-gray-700 border border-green-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                placeholder="What's this about?"
-              />
+              <p className="text-[#f9f3e7] mb-2">Subject of the Scroll</p>
+              <div className="bg-[#291b10] border border-[#c2a679] px-4 py-3 rounded-md text-[#e9dbc3]">
+                <input
+                  name="subject"
+                  type="text"
+                  placeholder="Matters of the realm..."
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  className="w-full bg-transparent outline-none placeholder-[#b6a284] text-inherit"
+                />
+              </div>
             </div>
+
             <div>
-              <label htmlFor="message" className="block text-sm font-semibold text-green-400 mb-2">
-                Message *
-              </label>
-              <textarea
-                name="message"
-                id="message"
-                value={formData.message}
-                onChange={handleInputChange}
-                required
-                rows={6}
-                className="w-full px-4 py-3 bg-gray-700 border border-green-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
-                placeholder="Tell us how we can help you..."
-              />
+              <p className="text-[#f9f3e7] mb-2">Thy Message *</p>
+              <div className="bg-[#291b10] border border-[#c2a679] px-4 py-3 rounded-md text-[#e9dbc3]">
+                <textarea
+                  name="message"
+                  rows="6"
+                  placeholder="Inscribe thy noble words..."
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full bg-transparent outline-none placeholder-[#b6a284] text-inherit resize-none"
+                />
+              </div>
             </div>
-            <Button
-              type="submit"
-              className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-4 text-lg hover-glow"
-            >
-              <Send className="mr-2 h-5 w-5" />
-              Send Message
-            </Button>
+
+            {/* Wax seal style button */}
+            <div className="text-center">
+              <Button
+                type="submit"
+                className="bg-[#a32626] hover:bg-[#831d1d] text-white font-bold text-lg px-6 py-3 rounded-full shadow-md border-2 border-[#731616] hover:scale-105 transition-transform"
+              >
+                <Send className="mr-2 h-5 w-5" />
+                Send Scroll
+              </Button>
+            </div>
           </form>
         </motion.div>
-        
-         <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="mt-12 bg-gray-800/60 backdrop-blur-sm border border-green-500/30 rounded-lg p-8"
-          >
-            <h2 className="font-orbitron text-2xl font-bold text-center text-green-400 text-emphasis mb-8">
-              Development Team
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {teamMembers.map((member, index) => (
-                <div key={index} className="text-center">
-                  <h3 className="font-orbitron text-lg font-semibold text-white">{member.name}</h3>
-                   <a 
-                    href={member.github} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300 transition-colors text-sm mt-1 inline-block"
-                  >
-                    GitHub Profile
-                  </a>
-                </div>
-              ))}
-            </div>
-        </motion.div>
 
+        {/* Dev Names */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-16 p-6 bg-[#2a1b0d] border-l-4 border-[#d4af37] rounded-md"
+        >
+          <h2 className="text-2xl font-bold mb-6 text-[#d4af37] text-center">Developers of This Scroll</h2>
+          <div className="grid md:grid-cols-3 gap-6 text-center text-[#f5ecd4]">
+            {teamMembers.map((member, index) => (
+              <div key={index}>
+                <p className="font-semibold text-lg">{member.name}</p>
+                <a
+                  href={member.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-300 hover:underline"
+                >
+                  View their codex
+                </a>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </div>
   );
