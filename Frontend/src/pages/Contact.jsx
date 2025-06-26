@@ -21,29 +21,29 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.email || !formData.message) {
       toast({
-        title: "Missing fields",
-        description: "Please fill in all required fields.",
+        title: "Ye fields art barren",
+        description: "Pray, fill all the required scrolls.",
         variant: "destructive"
       });
       return;
     }
 
     const emailBody = `Name: ${formData.name}\nEmail: ${formData.email}\nSubject: ${formData.subject}\n\nMessage:\n${formData.message}`;
-    const mailtoLink = `mailto:aj29162460@gmail.com?subject=${encodeURIComponent(formData.subject || 'LeafGuard AI Contact')}&body=${encodeURIComponent(emailBody)}`;
-    
+    const mailtoLink = `mailto:aj29162460@gmail.com?subject=${encodeURIComponent(formData.subject || 'Scroll from LeafGuard AI')}&&body=${encodeURIComponent(emailBody)}`;
+
     try {
       window.location.href = mailtoLink;
       toast({
-        title: "Message prepared!",
-        description: "Your email client should open with the message ready to send."
+        title: "Scroll Prepared!",
+        description: "Thy email parchment is ready in your messenger!"
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Could not open email client. Please copy the details manually.",
+        title: "Alas!",
+        description: "Could not conjure thy email. Please copy it manually.",
         variant: "destructive"
       });
       console.error("Failed to open mailto link:", error);
@@ -58,36 +58,26 @@ const Contact = () => {
   };
 
   const teamMembers = [
-    {
-      name: "Sampark Bhol",
-      github: "https://github.com/samparkbhol"
-    },
-    {
-      name: "Akshat Jain",
-      github: "https://github.com/akshatjain",
-      email: "aj29162460@gmail.com"
-    },
-    {
-      name: "Shreyas K",
-      github: "https://github.com/shreyask"
-    }
+    { name: " Sampark of Bhol", github: "https://github.com/samparkbhol" },
+    { name: " Akshat of Jain", github: "https://github.com/akshatjain" },
+    { name: " Shreyas of K", github: "https://github.com/shreyask" }
   ];
 
   return (
-    <div className="min-h-screen pt-20 px-4 bg-gray-900">
+    <div className="min-h-screen pt-20 px-4 bg-[#2b1d0e] text-[#f0e6d2] font-[Cinzel]">
       <div className="max-w-4xl mx-auto">
+
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h1 className="font-orbitron text-4xl md:text-6xl font-bold text-green-400 text-emphasis mb-6">
-            Contact Us
+          <h1 className="text-5xl md:text-6xl font-bold text-[#d4af37] mb-4 drop-shadow-md">
+            Send Thy Message
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Have questions about LeafGuard AI? Need technical support? 
-            Want to collaborate? We'd love to hear from you!
+          <p className="text-xl text-[#e6decf] max-w-2xl mx-auto">
+            Be thee troubled or inspired? Deliver thy scroll unto our council!
           </p>
         </motion.div>
 
@@ -95,16 +85,13 @@ const Contact = () => {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="bg-gray-800/60 backdrop-blur-sm border border-green-500/30 rounded-lg p-8"
+          className="bg-[#3d2a14] border border-[#a9743d] rounded-xl p-8 shadow-[0_0_10px_#a9743d80]"
         >
-          <h2 className="font-orbitron text-2xl font-bold text-green-400 text-emphasis mb-6">
-            Send us a Message
-          </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-semibold text-green-400 mb-2">
-                  Name *
+                <label htmlFor="name" className="block mb-2 text-sm font-bold">
+                  Thy Name *
                 </label>
                 <input
                   type="text"
@@ -112,14 +99,14 @@ const Contact = () => {
                   id="name"
                   value={formData.name}
                   onChange={handleInputChange}
+                  className="w-full px-4 py-3 bg-[#4b3621] border border-[#a9743d] rounded-md text-[#f9f5ec] placeholder-[#c8bca8] focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
+                  placeholder="Sir Galahad"
                   required
-                  className="w-full px-4 py-3 bg-gray-700 border border-green-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="Your full name"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-semibold text-green-400 mb-2">
-                  Email *
+                <label htmlFor="email" className="block mb-2 text-sm font-bold">
+                  Thy Scroll Address *
                 </label>
                 <input
                   type="email"
@@ -127,15 +114,16 @@ const Contact = () => {
                   id="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  className="w-full px-4 py-3 bg-[#4b3621] border border-[#a9743d] rounded-md text-[#f9f5ec] placeholder-[#c8bca8] focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
+                  placeholder="ye@example.com"
                   required
-                  className="w-full px-4 py-3 bg-gray-700 border border-green-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="your.email@example.com"
                 />
               </div>
             </div>
+
             <div>
-              <label htmlFor="subject" className="block text-sm font-semibold text-green-400 mb-2">
-                Subject
+              <label htmlFor="subject" className="block mb-2 text-sm font-bold">
+                Scroll Title
               </label>
               <input
                 type="text"
@@ -143,59 +131,59 @@ const Contact = () => {
                 id="subject"
                 value={formData.subject}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 bg-gray-700 border border-green-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                placeholder="What's this about?"
+                className="w-full px-4 py-3 bg-[#4b3621] border border-[#a9743d] rounded-md text-[#f9f5ec] placeholder-[#c8bca8] focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
+                placeholder="Matters of the Realm..."
               />
             </div>
+
             <div>
-              <label htmlFor="message" className="block text-sm font-semibold text-green-400 mb-2">
-                Message *
+              <label htmlFor="message" className="block mb-2 text-sm font-bold">
+                Thy Words *
               </label>
               <textarea
                 name="message"
                 id="message"
+                rows={6}
                 value={formData.message}
                 onChange={handleInputChange}
                 required
-                rows={6}
-                className="w-full px-4 py-3 bg-gray-700 border border-green-500/30 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
-                placeholder="Tell us how we can help you..."
+                className="w-full px-4 py-3 bg-[#4b3621] border border-[#a9743d] rounded-md text-[#f9f5ec] placeholder-[#c8bca8] focus:outline-none focus:ring-2 focus:ring-[#d4af37] resize-none"
+                placeholder="Speak thy thoughts..."
               />
             </div>
+
             <Button
               type="submit"
-              className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-4 text-lg hover-glow"
+              className="w-full bg-[#d4af37] hover:bg-[#c49b2f] text-black font-bold py-3 text-lg rounded-full"
             >
               <Send className="mr-2 h-5 w-5" />
-              Send Message
+              Dispatch Scroll
             </Button>
           </form>
         </motion.div>
-        
-         <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="mt-12 bg-gray-800/60 backdrop-blur-sm border border-green-500/30 rounded-lg p-8"
-          >
-            <h2 className="font-orbitron text-2xl font-bold text-center text-green-400 text-emphasis mb-8">
-              Development Team
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {teamMembers.map((member, index) => (
-                <div key={index} className="text-center">
-                  <h3 className="font-orbitron text-lg font-semibold text-white">{member.name}</h3>
-                   <a 
-                    href={member.github} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300 transition-colors text-sm mt-1 inline-block"
-                  >
-                    GitHub Profile
-                  </a>
-                </div>
-              ))}
-            </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-12 bg-[#3d2a14] border border-[#a9743d] rounded-xl p-8 shadow-[0_0_10px_#a9743d80]"
+        >
+          <h2 className="text-2xl font-bold text-center text-[#d4af37] mb-8">The Royal Scribes</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {teamMembers.map((member, index) => (
+              <div key={index} className="text-center">
+                <h3 className="text-lg font-semibold">{member.name}</h3>
+                <a
+                  href={member.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-300 hover:text-blue-200 transition-colors text-sm mt-1 inline-block"
+                >
+                  Visit their Codex
+                </a>
+              </div>
+            ))}
+          </div>
         </motion.div>
 
       </div>
