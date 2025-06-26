@@ -64,30 +64,105 @@ const UploadPage = () => {
     }
   };
 
+
+//   const handleAnalyze = async () => {
+//   if (!selectedFile) {
+//     toast({
+//       title: "No image selected",
+//       description: "Please upload an image first.",
+//       variant: "destructive",
+//     });
+//     return;
+//   }
+
+//   setIsAnalyzing(true);
+//   setResult(null);
+
+//   const formData = new FormData();
+//   formData.append("file", selectedFile);
+
+//   try {
+//     const response = await fetch("http://localhost:8000/predict", {
+//       method: "POST",
+//       body: formData,
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Failed to get prediction");
+//     }
+
+//     const data = await response.json();
+
+//     setResult({
+//       disease: data.prediction || "Unknown Disease",
+//       confidence: `${(data.confidence * 100).toFixed(2)}%`,
+//       severity: data.severity || "N/A",
+//       treatment: data.treatment || "No treatment recommendation available.",
+//       prevention: data.prevention || "No prevention tips available.",
+//     });
+//   } catch (error) {
+//     toast({
+//       title: "Prediction failed",
+//       description: error.message,
+//       variant: "destructive",
+//     });
+//   } finally {
+//     setIsAnalyzing(false);
+//   }
+// };
   const handleAnalyze = async () => {
-    if (!selectedFile) {
-      toast({
-        title: "No image selected",
-        description: "Please upload an image first.",
-        variant: "destructive",
-      });
-      return;
+  if (!selectedFile) {
+    toast({
+      title: "No image selected",
+      description: "Please upload an image first.",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  setIsAnalyzing(true);
+  setResult(null);
+
+  const formData = new FormData();
+  formData.append("file", selectedFile);
+
+  try {
+    const response = await fetch("http://localhost:8000/predict", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to get prediction");
     }
 
-    setIsAnalyzing(true);
-    setResult(null); 
+    const data = await response.json();
+
+    setResult({
+      disease: data.prediction || "Unknown Disease",
+      confidence: `${(data.confidence * 100).toFixed(2)}%`,
+      severity: data.severity || "N/A",
+      treatment: data.treatment || "No treatment recommendation available.",
+      prevention: data.prevention || "No prevention tips available.",
+      pdf_url: data.pdf_url,
+      image_url: data.image_url,
+    });
 
     toast({
-      title: "AI Analysis Pending",
-      description: "🚧 Backend for AI analysis is not yet implemented. This is a placeholder. You can request full backend integration in your next prompt! 🚀",
-      duration: 5000,
+      title: "Analysis Complete",
+      description: "You can now view and download the report.",
     });
-    
-    setTimeout(() => {
-      setIsAnalyzing(false);
-      // No dummy result is set here. The UI will show "Awaiting Analysis".
-    }, 2000);
-  };
+
+  } catch (error) {
+    toast({
+      title: "Prediction failed",
+      description: error.message,
+      variant: "destructive",
+    });
+  } finally {
+    setIsAnalyzing(false);
+  }
+};
 
   const resetUpload = () => {
     setSelectedFile(null);
@@ -174,7 +249,7 @@ const UploadPage = () => {
               <Button
                 onClick={() => toast({
                   title: "Camera feature",
-                  description: "🚧 This feature isn't implemented yet—but don't worry! You can request it in your next prompt! 🚀"
+                  description: "🚧 This feature isn't implemented yet."
                 })}
                 variant="outline"
                 className="border-green-500 text-green-400 hover:bg-green-500/20"
@@ -247,7 +322,7 @@ const UploadPage = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="flex space-x-3 pt-4">
+                    {/* <div className="flex space-x-3 pt-4">
                       <Button
                         onClick={() => toast({
                           title: "PDF Export",
@@ -267,7 +342,24 @@ const UploadPage = () => {
                       >
                         Save to History
                       </Button>
+                    </div> */}
+                    <div className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 pt-4">
+                      {result.pdf_url && (
+                        <a href={result.pdf_url} target="_blank" rel="noopener noreferrer" className="flex-1">
+                          <Button className="w-full bg-blue-500 hover:bg-blue-600">
+                            Download Report (PDF)
+                          </Button>
+                        </a>
+                      )}
+                      {result.image_url && (
+                        <a href={result.image_url} target="_blank" rel="noopener noreferrer" className="flex-1">
+                          <Button className="w-full bg-gray-700 hover:bg-gray-800">
+                            Download Image
+                          </Button>
+                        </a>
+                      )}
                     </div>
+
                   </div>
                 </div>
               ) : (

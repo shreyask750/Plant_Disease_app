@@ -8,6 +8,7 @@ import HowItWorks from '@/pages/HowItWorks';
 import About from '@/pages/About';
 import History from '@/pages/History';
 import Contact from '@/pages/Contact';
+import NearbyShops from '@/pages/NearbyShops'; // ✅ New page
 import Footer from '@/components/Footer';
 import ChatBot from '@/components/ChatBot';
 
@@ -25,6 +26,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/history" element={<History />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/nearby" element={<NearbyShops />} /> {/* ✅ New route */}
           </Routes>
         </main>
         <Footer />
@@ -35,4 +37,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 
