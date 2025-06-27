@@ -36,7 +36,10 @@ app.mount("/images", StaticFiles(directory="saved_images"), name="images")
 app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 
 # Load model (inference mode)
-model = tf.keras.models.load_model("D:/Down-loads/Plant_Disease_app/backend/plant_disease_classifier_final.h5")
+BASE_DIR = os.path.dirname(__file__)
+model_path = os.path.join(BASE_DIR, "plant_disease_classifier_final.h5")
+model = tf.keras.models.load_model(model_path)
+
 
 # Class labels
 class_names = ['Apple Scab', 'Apple Black Rot', 'Cedar Apple Rust', 'Healthy']
