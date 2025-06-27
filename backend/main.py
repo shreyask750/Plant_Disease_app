@@ -36,9 +36,8 @@ app.mount("/images", StaticFiles(directory="saved_images"), name="images")
 app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 
 # Load model (inference mode)
-BASE_DIR = os.path.dirname(__file__)
-model_path = os.path.join(BASE_DIR, "plant_disease_classifier_final.h5")
-model = tf.keras.models.load_model(model_path)
+model = tf.keras.models.load_model("Model/plant_disease_classifier_final.h5")
+
 
 
 # Class labels
