@@ -21,7 +21,7 @@ sio_app = app  # Optional for compatibility
 # CORS for Vercel frontend - replace "*" with your frontend URL if known for production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Ideally: ["https://your-vercel-frontend-url.vercel.app"]
+    allow_origins=["https://plantdisease-scarlmtd-projects-co.vercel.app"],  # Ideally: ["https://your-vercel-frontend-url.vercel.app"]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

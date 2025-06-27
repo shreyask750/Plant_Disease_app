@@ -127,7 +127,7 @@ const UploadPage = () => {
   formData.append("file", selectedFile);
 
   try {
-    const response = await fetch("http://localhost:8000/predict", {
+    const response = await fetch("https://plantdisease-scarlmtd-projects-co.vercel.app/predict", {
       method: "POST",
       body: formData,
     });
