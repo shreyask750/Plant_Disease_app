@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Request
+from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -11,17 +11,23 @@ import json
 from datetime import datetime
 from fpdf import FPDF
 import absl.logging
+import os
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=port, reload=True)
 
 # Suppress TensorFlow warnings
 absl.logging.set_verbosity(absl.logging.ERROR)
 
 app = FastAPI()
-sio_app = app  # Optional for compatibility
+sio_app = app  # Optional alias for compatibility
 
-# CORS configuration for Vercel frontend
+# CORS - adjust origins in production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Change to your frontend URL for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,18 +37,18 @@ app.add_middleware(
 os.makedirs("saved_images", exist_ok=True)
 os.makedirs("reports", exist_ok=True)
 
-# Serve static files
+# Serve static files for images and PDF reports
 app.mount("/images", StaticFiles(directory="saved_images"), name="images")
 app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 
-# Load the model
-model = tf.keras.models.load_model("Model/plant_disease_classifier_final.h5")
+# Load the Keras model saved in native format (.keras)
+model = tf.keras.models.load_model("plant_disease_classifier_final.keras")
 
-# Class labels
+# Class labels corresponding to the model output
 class_names = ['Apple Scab', 'Apple Black Rot', 'Cedar Apple Rust', 'Healthy']
 
-# PDF generation helper
 def generate_pdf(prediction, confidence, info, save_path):
+    """Generate PDF report for the prediction."""
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=14)
@@ -57,13 +63,9 @@ def generate_pdf(prediction, confidence, info, save_path):
     pdf.multi_cell(200, 10, txt=f"Prevention: {info['prevention']}")
     pdf.output(save_path)
 
-# Base URL helper
-def get_base_url(request: Request) -> str:
-    return str(request.base_url).rstrip('/')
-
-# Prediction endpoint
 @app.post("/predict")
-async def predict(request: Request, file: UploadFile = File(...)):
+async def predict(file: UploadFile = File(...)):
+    """Accept an uploaded image file, predict plant disease, save image and PDF report, and return info."""
     try:
         image = Image.open(io.BytesIO(await file.read())).convert("RGB")
         image = image.resize((224, 224))
@@ -112,16 +114,15 @@ async def predict(request: Request, file: UploadFile = File(...)):
         image.save(image_path)
         generate_pdf(predicted_class, confidence, info, pdf_path)
 
-        base_url = get_base_url(request)
-
+        # Append prediction to history JSON file
         history_entry = {
             "timestamp": timestamp,
             "prediction": predicted_class,
             "confidence": confidence,
             "severity": info["severity"],
             "status": "treated" if predicted_class != "Healthy" else "healthy",
-            "image_url": f"{base_url}/images/{image_filename}",
-            "report_url": f"{base_url}/reports/{pdf_filename}",
+            "image_url": f"/images/{image_filename}",
+            "report_url": f"/reports/{pdf_filename}",
             "reportFilename": pdf_filename
         }
 
@@ -133,7 +134,6 @@ async def predict(request: Request, file: UploadFile = File(...)):
             history_data = []
 
         history_data.append(history_entry)
-
         with open(history_file, "w") as f:
             json.dump(history_data, f, indent=2)
 
@@ -143,16 +143,16 @@ async def predict(request: Request, file: UploadFile = File(...)):
             "treatment": info["treatment"],
             "prevention": info["prevention"],
             "severity": info["severity"],
-            "image_url": f"{base_url}/images/{image_filename}",
-            "pdf_url": f"{base_url}/reports/{pdf_filename}"
+            "image_url": f"/images/{image_filename}",
+            "report_url": f"/reports/{pdf_filename}"
         })
 
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-# History endpoint
 @app.get("/history")
 async def get_history():
+    """Return prediction history as JSON."""
     try:
         file_path = os.path.join(os.path.dirname(__file__), "prediction_history.json")
         with open(file_path, "r") as f:
@@ -161,9 +161,9 @@ async def get_history():
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-# PDF download endpoint
 @app.get("/download/pdf/{filename}")
 async def download_pdf(filename: str):
+    """Serve saved PDF reports for download."""
     file_path = os.path.join("reports", filename)
     if os.path.exists(file_path):
         return FileResponse(path=file_path, filename=filename, media_type="application/pdf")
