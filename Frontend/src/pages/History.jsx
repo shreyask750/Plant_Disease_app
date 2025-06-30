@@ -4,7 +4,7 @@ import { FileText, Download, Eye, Calendar, AlertCircle, CheckCircle, XCircle } 
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 
-const BACKEND_URL = "https://plantdisease-scarlmtd-projects-co.vercel.app";
+const BACKEND_URL = "https://plant-backend-s47e.onrender.com";
 
 const History = () => {
   const [diagnoses, setDiagnoses] = useState([]);

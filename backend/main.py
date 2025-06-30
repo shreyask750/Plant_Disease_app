@@ -11,41 +11,44 @@ import json
 from datetime import datetime
 from fpdf import FPDF
 import absl.logging
+import os
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=port, reload=True)
 
 # Suppress TensorFlow warnings
 absl.logging.set_verbosity(absl.logging.ERROR)
 
 app = FastAPI()
-sio_app = app  # Optional for compatibility
+sio_app = app  # Optional alias for compatibility
 
-# CORS for Vercel frontend - replace "*" with your frontend URL if known for production
+# CORS - adjust origins in production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://plantdisease-scarlmtd-projects-co.vercel.app"],  # Ideally: ["https://your-vercel-frontend-url.vercel.app"]
+    allow_origins=["https://plant-disease-app-eyaf.onrender.com"],  # Change to your frontend URL for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Ensure necessary directories exist
+# Ensure directories exist
 os.makedirs("saved_images", exist_ok=True)
 os.makedirs("reports", exist_ok=True)
 
-# Mount static folders for serving images and reports
+# Serve static files for images and PDF reports
 app.mount("/images", StaticFiles(directory="saved_images"), name="images")
 app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 
-# Load model (inference mode)
-BASE_DIR = os.path.dirname(__file__)
-model_path = os.path.join(BASE_DIR, "plant_disease_classifier_final.h5")
-model = tf.keras.models.load_model(model_path)
+# Load the Keras model saved in native format (.keras)
+model = tf.keras.models.load_model("plant_disease_classifier_final.keras")
 
-
-# Class labels
+# Class labels corresponding to the model output
 class_names = ['Apple Scab', 'Apple Black Rot', 'Cedar Apple Rust', 'Healthy']
 
-# PDF generation helper
 def generate_pdf(prediction, confidence, info, save_path):
+    """Generate PDF report for the prediction."""
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=14)
@@ -60,9 +63,9 @@ def generate_pdf(prediction, confidence, info, save_path):
     pdf.multi_cell(200, 10, txt=f"Prevention: {info['prevention']}")
     pdf.output(save_path)
 
-# Prediction endpoint
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
+    """Accept an uploaded image file, predict plant disease, save image and PDF report, and return info."""
     try:
         image = Image.open(io.BytesIO(await file.read())).convert("RGB")
         image = image.resize((224, 224))
@@ -111,6 +114,7 @@ async def predict(file: UploadFile = File(...)):
         image.save(image_path)
         generate_pdf(predicted_class, confidence, info, pdf_path)
 
+        # Append prediction to history JSON file
         history_entry = {
             "timestamp": timestamp,
             "prediction": predicted_class,
@@ -130,7 +134,6 @@ async def predict(file: UploadFile = File(...)):
             history_data = []
 
         history_data.append(history_entry)
-
         with open(history_file, "w") as f:
             json.dump(history_data, f, indent=2)
 
@@ -147,9 +150,9 @@ async def predict(file: UploadFile = File(...)):
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-# History endpoint
 @app.get("/history")
 async def get_history():
+    """Return prediction history as JSON."""
     try:
         file_path = os.path.join(os.path.dirname(__file__), "prediction_history.json")
         with open(file_path, "r") as f:
@@ -158,9 +161,9 @@ async def get_history():
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-# PDF download endpoint (used by frontend to download PDF reports)
 @app.get("/download/pdf/{filename}")
 async def download_pdf(filename: str):
+    """Serve saved PDF reports for download."""
     file_path = os.path.join("reports", filename)
     if os.path.exists(file_path):
         return FileResponse(path=file_path, filename=filename, media_type="application/pdf")
