@@ -27,7 +27,7 @@ sio_app = app  # Optional alias for compatibility
 # CORS - adjust origins in production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to your frontend URL for production
+    allow_origins=["https://plant-disease-app-eyaf.onrender.com"],  # Change to your frontend URL for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
