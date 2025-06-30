@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -18,27 +18,25 @@ absl.logging.set_verbosity(absl.logging.ERROR)
 app = FastAPI()
 sio_app = app  # Optional for compatibility
 
-# CORS for Vercel frontend - replace "*" with your frontend URL if known for production
+# CORS configuration for Vercel frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://plantdisease-scarlmtd-projects-co.vercel.app"],  # Ideally: ["https://your-vercel-frontend-url.vercel.app"]
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Ensure necessary directories exist
+# Ensure directories exist
 os.makedirs("saved_images", exist_ok=True)
 os.makedirs("reports", exist_ok=True)
 
-# Mount static folders for serving images and reports
+# Serve static files
 app.mount("/images", StaticFiles(directory="saved_images"), name="images")
 app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 
-# Load model (inference mode)
+# Load the model
 model = tf.keras.models.load_model("Model/plant_disease_classifier_final.h5")
-
-
 
 # Class labels
 class_names = ['Apple Scab', 'Apple Black Rot', 'Cedar Apple Rust', 'Healthy']
@@ -59,9 +57,13 @@ def generate_pdf(prediction, confidence, info, save_path):
     pdf.multi_cell(200, 10, txt=f"Prevention: {info['prevention']}")
     pdf.output(save_path)
 
+# Base URL helper
+def get_base_url(request: Request) -> str:
+    return str(request.base_url).rstrip('/')
+
 # Prediction endpoint
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
+async def predict(request: Request, file: UploadFile = File(...)):
     try:
         image = Image.open(io.BytesIO(await file.read())).convert("RGB")
         image = image.resize((224, 224))
@@ -110,14 +112,16 @@ async def predict(file: UploadFile = File(...)):
         image.save(image_path)
         generate_pdf(predicted_class, confidence, info, pdf_path)
 
+        base_url = get_base_url(request)
+
         history_entry = {
             "timestamp": timestamp,
             "prediction": predicted_class,
             "confidence": confidence,
             "severity": info["severity"],
             "status": "treated" if predicted_class != "Healthy" else "healthy",
-            "image_url": f"/images/{image_filename}",
-            "report_url": f"/reports/{pdf_filename}",
+            "image_url": f"{base_url}/images/{image_filename}",
+            "report_url": f"{base_url}/reports/{pdf_filename}",
             "reportFilename": pdf_filename
         }
 
@@ -139,8 +143,8 @@ async def predict(file: UploadFile = File(...)):
             "treatment": info["treatment"],
             "prevention": info["prevention"],
             "severity": info["severity"],
-            "image_url": f"/images/{image_filename}",
-            "report_url": f"/reports/{pdf_filename}"
+            "image_url": f"{base_url}/images/{image_filename}",
+            "pdf_url": f"{base_url}/reports/{pdf_filename}"
         })
 
     except Exception as e:
@@ -157,7 +161,7 @@ async def get_history():
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-# PDF download endpoint (used by frontend to download PDF reports)
+# PDF download endpoint
 @app.get("/download/pdf/{filename}")
 async def download_pdf(filename: str):
     file_path = os.path.join("reports", filename)
