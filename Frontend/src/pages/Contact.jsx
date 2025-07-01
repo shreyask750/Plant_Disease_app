@@ -60,7 +60,7 @@ const Contact = () => {
   const teamMembers = [
     { name: "Sampark Bhol", github: "https://github.com/samparkbhol" },
     { name: "Akshat Jain", github: "https://github.com/akshatjain" },
-    { name: "Shreyas K", github: "https://github.com/shreyask" }
+    { name: "Shreyas K", github: "https://github.com/shreyas750" }
   ];
 
   return (
