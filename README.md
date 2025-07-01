@@ -1,8 +1,7 @@
 
 ## Deployment
 
-https://plantdisease-scarlmtd-projects-co.vercel.app
-
+plant-disease-app-eyaf.onrender.com
 
 
 ![image](https://github.com/user-attachments/assets/4bbe4a5d-5bb9-45d1-9d80-a7cd6c8fc0e5)
